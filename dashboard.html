@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Futebol Europeu 2025/2026 - JARVIS</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        }
+        header h1 {
+            font-size: 2rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .league-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #0f172a;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            background: rgba(255,255,255,0.02);
+        }
+        tr:hover td {
+            background: rgba(255,255,255,0.03);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚽ Dashboard de Futebol Europeu</h1>
+            <p>Estatísticas atualizadas da época 2025/2026 | JARVIS Agent</p>
+        </header>
+
+        <div class="league-tabs" id="leagueTabs"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total de Jogos</h3>
+                <div class="value" id="totalMatches">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total de Golos</h3>
+                <div class="value" id="totalGoals">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Média de Golos / Jogo</h3>
+                <div class="value" id="avgGoals">-</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="panel">
+                <h2>🏆 Equipas Mais Goleadoras</h2>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Equipa</th>
+                                <th style="text-align: center;">Jogos</th>
+                                <th style="text-align: center;">Golos</th>
+                                <th style="text-align: center;">Média</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teamsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>🕒 Últimos Jogos</h2>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Jogo</th>
+                                <th style="text-align: center;">Resultado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matchesTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Criado pelo JARVIS 🤖 | Dados do Excel `all-euro-data-2025-2026.xlsx`
+        </div>
+    </div>
+
+    <script>
+        const data = {"P1": {"name": "Portugal (Liga Portugal)", "total_matches": 306, "total_goals": 821, "avg_goals": 2.68, "teams": [{"team": "Sp Lisbon", "matches": 34, "goals": 89, "avg": 2.62}, {"team": "Benfica", "matches": 34, "goals": 74, "avg": 2.18}, {"team": "Porto", "matches": 34, "goals": 66, "avg": 1.94}, {"team": "Sp Braga", "matches": 34, "goals": 64, "avg": 1.88}, {"team": "Estoril", "matches": 34, "goals": 54, "avg": 1.59}, {"team": "Arouca", "matches": 34, "goals": 47, "avg": 1.38}, {"team": "Gil Vicente", "matches": 34, "goals": 47, "avg": 1.38}, {"team": "Famalicao", "matches": 34, "goals": 42, "avg": 1.24}, {"team": "Guimaraes", "matches": 34, "goals": 39, "avg": 1.15}, {"team": "Estrela", "matches": 34, "goals": 38, "avg": 1.12}, {"team": "Moreirense", "matches": 34, "goals": 37, "avg": 1.09}, {"team": "Nacional", "matches": 34, "goals": 37, "avg": 1.09}, {"team": "Alverca", "matches": 34, "goals": 35, "avg": 1.03}, {"team": "Rio Ave", "matches": 34, "goals": 35, "avg": 1.03}, {"team": "Santa Clara", "matches": 34, "goals": 32, "avg": 0.94}, {"team": "Casa Pia", "matches": 34, "goals": 31, "avg": 0.91}, {"team": "AVS", "matches": 34, "goals": 27, "avg": 0.79}, {"team": "Tondela", "matches": 34, "goals": 27, "avg": 0.79}], "matches": [{"date": "2026-05-16", "home": "Sp Lisbon", "away": "Gil Vicente", "fthg": 3, "ftag": 0, "ftr": "H"}, {"date": "2026-05-16", "home": "Famalicao", "away": "Alverca", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-16", "home": "Estoril", "away": "Benfica", "fthg": 1, "ftag": 3, "ftr": "A"}, {"date": "2026-05-16", "home": "Sp Braga", "away": "Estrela", "fthg": 2, "ftag": 2, "ftr": "D"}, {"date": "2026-05-16", "home": "Nacional", "away": "Guimaraes", "fthg": 2, "ftag": 0, "ftr": "H"}, {"date": "2026-05-16", "home": "Casa Pia", "away": "Rio Ave", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-16", "home": "Arouca", "away": "Tondela", "fthg": 3, "ftag": 1, "ftr": "H"}, {"date": "2026-05-16", "home": "Porto", "away": "Santa Clara", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-16", "home": "Moreirense", "away": "AVS", "fthg": 0, "ftag": 0, "ftr": "D"}, {"date": "2026-05-11", "home": "Tondela", "away": "Moreirense", "fthg": 2, "ftag": 0, "ftr": "H"}, {"date": "2026-05-11", "home": "Santa Clara", "away": "Nacional", "fthg": 2, "ftag": 0, "ftr": "H"}, {"date": "2026-05-11", "home": "Rio Ave", "away": "Sp Lisbon", "fthg": 1, "ftag": 4, "ftr": "A"}, {"date": "2026-05-11", "home": "Guimaraes", "away": "Casa Pia", "fthg": 0, "ftag": 1, "ftr": "A"}, {"date": "2026-05-11", "home": "Gil Vicente", "away": "Arouca", "fthg": 1, "ftag": 3, "ftr": "A"}, {"date": "2026-05-11", "home": "Estrela", "away": "Famalicao", "fthg": 0, "ftag": 0, "ftr": "D"}]}, "E0": {"name": "Inglaterra (Premier League)", "total_matches": 380, "total_goals": 1045, "avg_goals": 2.75, "teams": [{"team": "Man City", "matches": 38, "goals": 77, "avg": 2.03}, {"team": "Arsenal", "matches": 38, "goals": 71, "avg": 1.87}, {"team": "Man United", "matches": 38, "goals": 69, "avg": 1.82}, {"team": "Liverpool", "matches": 38, "goals": 63, "avg": 1.66}, {"team": "Bournemouth", "matches": 38, "goals": 58, "avg": 1.53}, {"team": "Chelsea", "matches": 38, "goals": 58, "avg": 1.53}, {"team": "Aston Villa", "matches": 38, "goals": 56, "avg": 1.47}, {"team": "Brentford", "matches": 38, "goals": 55, "avg": 1.45}, {"team": "Newcastle", "matches": 38, "goals": 53, "avg": 1.39}, {"team": "Brighton", "matches": 38, "goals": 52, "avg": 1.37}, {"team": "Leeds", "matches": 38, "goals": 49, "avg": 1.29}, {"team": "Nott'm Forest", "matches": 38, "goals": 48, "avg": 1.26}, {"team": "Tottenham", "matches": 38, "goals": 48, "avg": 1.26}, {"team": "Everton", "matches": 38, "goals": 47, "avg": 1.24}, {"team": "Fulham", "matches": 38, "goals": 47, "avg": 1.24}, {"team": "West Ham", "matches": 38, "goals": 46, "avg": 1.21}, {"team": "Sunderland", "matches": 38, "goals": 42, "avg": 1.11}, {"team": "Crystal Palace", "matches": 38, "goals": 41, "avg": 1.08}, {"team": "Burnley", "matches": 38, "goals": 38, "avg": 1.0}, {"team": "Wolves", "matches": 38, "goals": 27, "avg": 0.71}], "matches": [{"date": "2026-05-24", "home": "West Ham", "away": "Leeds", "fthg": 3, "ftag": 0, "ftr": "H"}, {"date": "2026-05-24", "home": "Tottenham", "away": "Everton", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-24", "home": "Sunderland", "away": "Chelsea", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-24", "home": "Nott'm Forest", "away": "Bournemouth", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-24", "home": "Man City", "away": "Aston Villa", "fthg": 1, "ftag": 2, "ftr": "A"}, {"date": "2026-05-24", "home": "Liverpool", "away": "Brentford", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-24", "home": "Fulham", "away": "Newcastle", "fthg": 2, "ftag": 0, "ftr": "H"}, {"date": "2026-05-24", "home": "Crystal Palace", "away": "Arsenal", "fthg": 1, "ftag": 2, "ftr": "A"}, {"date": "2026-05-24", "home": "Burnley", "away": "Wolves", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-24", "home": "Brighton", "away": "Man United", "fthg": 0, "ftag": 3, "ftr": "A"}, {"date": "2026-05-19", "home": "Chelsea", "away": "Tottenham", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-19", "home": "Bournemouth", "away": "Man City", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-18", "home": "Arsenal", "away": "Burnley", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-17", "home": "Newcastle", "away": "West Ham", "fthg": 3, "ftag": 1, "ftr": "H"}, {"date": "2026-05-17", "home": "Wolves", "away": "Fulham", "fthg": 1, "ftag": 1, "ftr": "D"}]}, "SP1": {"name": "Espanha (La Liga)", "total_matches": 380, "total_goals": 1024, "avg_goals": 2.69, "teams": [{"team": "Barcelona", "matches": 38, "goals": 95, "avg": 2.5}, {"team": "Real Madrid", "matches": 38, "goals": 77, "avg": 2.03}, {"team": "Villarreal", "matches": 38, "goals": 72, "avg": 1.89}, {"team": "Ath Madrid", "matches": 38, "goals": 62, "avg": 1.63}, {"team": "Betis", "matches": 38, "goals": 59, "avg": 1.55}, {"team": "Sociedad", "matches": 38, "goals": 59, "avg": 1.55}, {"team": "Celta", "matches": 38, "goals": 53, "avg": 1.39}, {"team": "Elche", "matches": 38, "goals": 49, "avg": 1.29}, {"team": "Levante", "matches": 38, "goals": 47, "avg": 1.24}, {"team": "Mallorca", "matches": 38, "goals": 47, "avg": 1.24}, {"team": "Sevilla", "matches": 38, "goals": 46, "avg": 1.21}, {"team": "Valencia", "matches": 38, "goals": 46, "avg": 1.21}, {"team": "Alaves", "matches": 38, "goals": 44, "avg": 1.16}, {"team": "Osasuna", "matches": 38, "goals": 44, "avg": 1.16}, {"team": "Ath Bilbao", "matches": 38, "goals": 43, "avg": 1.13}, {"team": "Espanol", "matches": 38, "goals": 43, "avg": 1.13}, {"team": "Vallecano", "matches": 38, "goals": 41, "avg": 1.08}, {"team": "Girona", "matches": 38, "goals": 39, "avg": 1.03}, {"team": "Getafe", "matches": 38, "goals": 32, "avg": 0.84}, {"team": "Oviedo", "matches": 38, "goals": 26, "avg": 0.68}], "matches": [{"date": "2026-05-24", "home": "Villarreal", "away": "Ath Madrid", "fthg": 5, "ftag": 1, "ftr": "H"}, {"date": "2026-05-23", "home": "Valencia", "away": "Barcelona", "fthg": 3, "ftag": 1, "ftr": "H"}, {"date": "2026-05-23", "home": "Real Madrid", "away": "Ath Bilbao", "fthg": 4, "ftag": 2, "ftr": "H"}, {"date": "2026-05-23", "home": "Mallorca", "away": "Oviedo", "fthg": 3, "ftag": 0, "ftr": "H"}, {"date": "2026-05-23", "home": "Girona", "away": "Elche", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-23", "home": "Getafe", "away": "Osasuna", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-23", "home": "Espanol", "away": "Sociedad", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-23", "home": "Celta", "away": "Sevilla", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-23", "home": "Betis", "away": "Levante", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-23", "home": "Alaves", "away": "Vallecano", "fthg": 1, "ftag": 2, "ftr": "A"}, {"date": "2026-05-17", "home": "Barcelona", "away": "Betis", "fthg": 3, "ftag": 1, "ftr": "H"}, {"date": "2026-05-17", "home": "Vallecano", "away": "Villarreal", "fthg": 2, "ftag": 0, "ftr": "H"}, {"date": "2026-05-17", "home": "Sociedad", "away": "Valencia", "fthg": 3, "ftag": 4, "ftr": "A"}, {"date": "2026-05-17", "home": "Sevilla", "away": "Real Madrid", "fthg": 0, "ftag": 1, "ftr": "A"}, {"date": "2026-05-17", "home": "Oviedo", "away": "Alaves", "fthg": 0, "ftag": 1, "ftr": "A"}]}, "I1": {"name": "Itália (Serie A)", "total_matches": 380, "total_goals": 922, "avg_goals": 2.43, "teams": [{"team": "Inter", "matches": 38, "goals": 89, "avg": 2.34}, {"team": "Como", "matches": 38, "goals": 65, "avg": 1.71}, {"team": "Juventus", "matches": 38, "goals": 61, "avg": 1.61}, {"team": "Roma", "matches": 38, "goals": 59, "avg": 1.55}, {"team": "Napoli", "matches": 38, "goals": 58, "avg": 1.53}, {"team": "Milan", "matches": 38, "goals": 53, "avg": 1.39}, {"team": "Atalanta", "matches": 38, "goals": 51, "avg": 1.34}, {"team": "Bologna", "matches": 38, "goals": 49, "avg": 1.29}, {"team": "Sassuolo", "matches": 38, "goals": 46, "avg": 1.21}, {"team": "Udinese", "matches": 38, "goals": 45, "avg": 1.18}, {"team": "Torino", "matches": 38, "goals": 44, "avg": 1.16}, {"team": "Fiorentina", "matches": 38, "goals": 41, "avg": 1.08}, {"team": "Genoa", "matches": 38, "goals": 41, "avg": 1.08}, {"team": "Lazio", "matches": 38, "goals": 41, "avg": 1.08}, {"team": "Cagliari", "matches": 38, "goals": 40, "avg": 1.05}, {"team": "Cremonese", "matches": 38, "goals": 32, "avg": 0.84}, {"team": "Lecce", "matches": 38, "goals": 28, "avg": 0.74}, {"team": "Parma", "matches": 38, "goals": 28, "avg": 0.74}, {"team": "Pisa", "matches": 38, "goals": 26, "avg": 0.68}, {"team": "Verona", "matches": 38, "goals": 25, "avg": 0.66}], "matches": [{"date": "2026-05-24", "home": "Verona", "away": "Roma", "fthg": 0, "ftag": 2, "ftr": "A"}, {"date": "2026-05-24", "home": "Torino", "away": "Juventus", "fthg": 2, "ftag": 2, "ftr": "D"}, {"date": "2026-05-24", "home": "Milan", "away": "Cagliari", "fthg": 1, "ftag": 2, "ftr": "A"}, {"date": "2026-05-24", "home": "Lecce", "away": "Genoa", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-24", "home": "Cremonese", "away": "Como", "fthg": 1, "ftag": 4, "ftr": "A"}, {"date": "2026-05-24", "home": "Napoli", "away": "Udinese", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-24", "home": "Parma", "away": "Sassuolo", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-23", "home": "Lazio", "away": "Pisa", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-23", "home": "Bologna", "away": "Inter", "fthg": 3, "ftag": 3, "ftr": "D"}, {"date": "2026-05-22", "home": "Fiorentina", "away": "Atalanta", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-17", "home": "Udinese", "away": "Cremonese", "fthg": 0, "ftag": 1, "ftr": "A"}, {"date": "2026-05-17", "home": "Sassuolo", "away": "Lecce", "fthg": 2, "ftag": 3, "ftr": "A"}, {"date": "2026-05-17", "home": "Cagliari", "away": "Torino", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-17", "home": "Atalanta", "away": "Bologna", "fthg": 0, "ftag": 1, "ftr": "A"}, {"date": "2026-05-17", "home": "Inter", "away": "Verona", "fthg": 1, "ftag": 1, "ftr": "D"}]}, "D1": {"name": "Alemanha (Bundesliga)", "total_matches": 306, "total_goals": 990, "avg_goals": 3.24, "teams": [{"team": "Bayern Munich", "matches": 34, "goals": 122, "avg": 3.59}, {"team": "Stuttgart", "matches": 34, "goals": 71, "avg": 2.09}, {"team": "Dortmund", "matches": 34, "goals": 70, "avg": 2.06}, {"team": "Leverkusen", "matches": 34, "goals": 68, "avg": 2.0}, {"team": "RB Leipzig", "matches": 34, "goals": 66, "avg": 1.94}, {"team": "Hoffenheim", "matches": 34, "goals": 65, "avg": 1.91}, {"team": "Ein Frankfurt", "matches": 34, "goals": 61, "avg": 1.79}, {"team": "Freiburg", "matches": 34, "goals": 51, "avg": 1.5}, {"team": "FC Koln", "matches": 34, "goals": 49, "avg": 1.44}, {"team": "Augsburg", "matches": 34, "goals": 45, "avg": 1.32}, {"team": "Wolfsburg", "matches": 34, "goals": 45, "avg": 1.32}, {"team": "Mainz", "matches": 34, "goals": 44, "avg": 1.29}, {"team": "Union Berlin", "matches": 34, "goals": 44, "avg": 1.29}, {"team": "M'gladbach", "matches": 34, "goals": 42, "avg": 1.24}, {"team": "Heidenheim", "matches": 34, "goals": 41, "avg": 1.21}, {"team": "Hamburg", "matches": 34, "goals": 40, "avg": 1.18}, {"team": "Werder Bremen", "matches": 34, "goals": 37, "avg": 1.09}, {"team": "St Pauli", "matches": 34, "goals": 29, "avg": 0.85}], "matches": [{"date": "2026-05-16", "home": "Werder Bremen", "away": "Dortmund", "fthg": 0, "ftag": 2, "ftr": "A"}, {"date": "2026-05-16", "home": "Union Berlin", "away": "Augsburg", "fthg": 4, "ftag": 0, "ftr": "H"}, {"date": "2026-05-16", "home": "St Pauli", "away": "Wolfsburg", "fthg": 1, "ftag": 3, "ftr": "A"}, {"date": "2026-05-16", "home": "M'gladbach", "away": "Hoffenheim", "fthg": 4, "ftag": 0, "ftr": "H"}, {"date": "2026-05-16", "home": "Leverkusen", "away": "Hamburg", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-16", "home": "Heidenheim", "away": "Mainz", "fthg": 0, "ftag": 2, "ftr": "A"}, {"date": "2026-05-16", "home": "Freiburg", "away": "RB Leipzig", "fthg": 4, "ftag": 1, "ftr": "H"}, {"date": "2026-05-16", "home": "Ein Frankfurt", "away": "Stuttgart", "fthg": 2, "ftag": 2, "ftr": "D"}, {"date": "2026-05-16", "home": "Bayern Munich", "away": "FC Koln", "fthg": 5, "ftag": 1, "ftr": "H"}, {"date": "2026-05-10", "home": "Mainz", "away": "Union Berlin", "fthg": 1, "ftag": 3, "ftr": "A"}, {"date": "2026-05-10", "home": "FC Koln", "away": "Heidenheim", "fthg": 1, "ftag": 3, "ftr": "A"}, {"date": "2026-05-10", "home": "Hamburg", "away": "Freiburg", "fthg": 3, "ftag": 2, "ftr": "H"}, {"date": "2026-05-09", "home": "Wolfsburg", "away": "Bayern Munich", "fthg": 0, "ftag": 1, "ftr": "A"}, {"date": "2026-05-09", "home": "Stuttgart", "away": "Leverkusen", "fthg": 3, "ftag": 1, "ftr": "H"}, {"date": "2026-05-09", "home": "RB Leipzig", "away": "St Pauli", "fthg": 2, "ftag": 1, "ftr": "H"}]}, "F1": {"name": "França (Ligue 1)", "total_matches": 306, "total_goals": 863, "avg_goals": 2.82, "teams": [{"team": "Paris SG", "matches": 34, "goals": 74, "avg": 2.18}, {"team": "Lens", "matches": 34, "goals": 66, "avg": 1.94}, {"team": "Marseille", "matches": 34, "goals": 63, "avg": 1.85}, {"team": "Monaco", "matches": 34, "goals": 60, "avg": 1.76}, {"team": "Rennes", "matches": 34, "goals": 59, "avg": 1.74}, {"team": "Strasbourg", "matches": 34, "goals": 58, "avg": 1.71}, {"team": "Lyon", "matches": 34, "goals": 53, "avg": 1.56}, {"team": "Lille", "matches": 34, "goals": 52, "avg": 1.53}, {"team": "Lorient", "matches": 34, "goals": 48, "avg": 1.41}, {"team": "Paris FC", "matches": 34, "goals": 47, "avg": 1.38}, {"team": "Toulouse", "matches": 34, "goals": 47, "avg": 1.38}, {"team": "Brest", "matches": 34, "goals": 43, "avg": 1.26}, {"team": "Nice", "matches": 34, "goals": 37, "avg": 1.09}, {"team": "Auxerre", "matches": 34, "goals": 34, "avg": 1.0}, {"team": "Le Havre", "matches": 34, "goals": 32, "avg": 0.94}, {"team": "Metz", "matches": 34, "goals": 32, "avg": 0.94}, {"team": "Angers", "matches": 34, "goals": 29, "avg": 0.85}, {"team": "Nantes", "matches": 34, "goals": 29, "avg": 0.85}], "matches": [{"date": "2026-05-17", "home": "Strasbourg", "away": "Monaco", "fthg": 5, "ftag": 4, "ftr": "H"}, {"date": "2026-05-17", "home": "Paris FC", "away": "Paris SG", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-17", "home": "Nice", "away": "Metz", "fthg": 0, "ftag": 0, "ftr": "D"}, {"date": "2026-05-17", "home": "Nantes", "away": "Toulouse", "fthg": 0, "ftag": 0, "ftr": "D"}, {"date": "2026-05-17", "home": "Marseille", "away": "Rennes", "fthg": 3, "ftag": 1, "ftr": "H"}, {"date": "2026-05-17", "home": "Lyon", "away": "Lens", "fthg": 0, "ftag": 4, "ftr": "A"}, {"date": "2026-05-17", "home": "Lorient", "away": "Le Havre", "fthg": 0, "ftag": 2, "ftr": "A"}, {"date": "2026-05-17", "home": "Lille", "away": "Auxerre", "fthg": 0, "ftag": 2, "ftr": "A"}, {"date": "2026-05-17", "home": "Brest", "away": "Angers", "fthg": 1, "ftag": 1, "ftr": "D"}, {"date": "2026-05-13", "home": "Lens", "away": "Paris SG", "fthg": 0, "ftag": 2, "ftr": "A"}, {"date": "2026-05-13", "home": "Brest", "away": "Strasbourg", "fthg": 1, "ftag": 2, "ftr": "A"}, {"date": "2026-05-10", "home": "Toulouse", "away": "Lyon", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-10", "home": "Rennes", "away": "Paris FC", "fthg": 2, "ftag": 1, "ftr": "H"}, {"date": "2026-05-10", "home": "Paris SG", "away": "Brest", "fthg": 1, "ftag": 0, "ftr": "H"}, {"date": "2026-05-10", "home": "Monaco", "away": "Lille", "fthg": 0, "ftag": 1, "ftr": "A"}]}};
+        
+        const tabsContainer = document.getElementById('leagueTabs');
+        const totalMatchesEl = document.getElementById('totalMatches');
+        const totalGoalsEl = document.getElementById('totalGoals');
+        const avgGoalsEl = document.getElementById('avgGoals');
+        const teamsTableEl = document.getElementById('teamsTable');
+        const matchesTableEl = document.getElementById('matchesTable');
+
+        let currentLeague = Object.keys(data)[0];
+
+        function renderTabs() {
+            tabsContainer.innerHTML = '';
+            for (const [code, info] of Object.entries(data)) {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${code === currentLeague ? 'active' : ''}`;
+                btn.innerText = info.name;
+                btn.onclick = () => {
+                    currentLeague = code;
+                    renderTabs();
+                    renderDashboard();
+                };
+                tabsContainer.appendChild(btn);
+            }
+        }
+
+        function renderDashboard() {
+            const league = data[currentLeague];
+            totalMatchesEl.innerText = league.total_matches;
+            totalGoalsEl.innerText = league.total_goals;
+            avgGoalsEl.innerText = league.avg_goals;
+
+            // Render Teams
+            teamsTableEl.innerHTML = '';
+            league.teams.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${t.team}</strong></td>
+                    <td style="text-align: center;">${t.matches}</td>
+                    <td style="text-align: center; color: #38bdf8; font-weight: 600;">${t.goals}</td>
+                    <td style="text-align: center;">${t.avg}</td>
+                `;
+                teamsTableEl.appendChild(tr);
+            });
+
+            // Render Matches
+            matchesTableEl.innerHTML = '';
+            league.matches.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color: #94a3b8; font-size: 0.85rem;">${m.date}</td>
+                    <td>${m.home} vs ${m.away}</td>
+                    <td style="text-align: center; font-weight: 600;">${m.fthg} - ${m.ftag}</td>
+                `;
+                matchesTableEl.appendChild(tr);
+            });
+        }
+
+        renderTabs();
+        renderDashboard();
+    </script>
+</body>
+</html>
